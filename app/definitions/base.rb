@@ -1,2 +1,1 @@
-template "example"
-
+template "ec2"
