@@ -1,0 +1,111 @@
+# This file was generated with lono. Do not edit directly, the changes will be lost.
+# More info: http://lono.cloud
+# http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/sample-templates-services-us-west-2.html#w1ab2c21c45c15c15
+# Amazon EC2 instance in a security group Creates an Amazon EC2 instance in an Amazon EC2 security group.
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Create an Amazon EC2 instance with ARM based architecture.
+  Builds a Docker image and then curls it to make sure it works.
+  **WARNING** This template creates an Amazon
+  EC2 instance. You will be billed for the AWS resources used if you create a stack
+  from this template.'
+Parameters:
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  Ami:
+    Description: Ami of instance
+    Type: String
+    Default: ami-053b2a8c2f3e87928 # amzn2-ami-ecs-hvm-2.0.20181120-arm64-ebs in us-west-2
+    ConstraintDescription: Must be one of the ARM based AMI ids. Default is an ECS ARM in us-west-2
+  InstanceType:
+    Description: EC2 instance type
+    Type: String
+    Default: a1.medium
+    AllowedValues:
+    - a1.medium
+    - a1.large
+    - a1.xlarge
+    - a1.2xlarge
+    - a1.4xlarge
+    ConstraintDescription: must be a valid EC2 instance type.
+  SSHLocation:
+    Description: The IP address range that can be used to SSH to the EC2 instances
+    Type: String
+    MinLength: '9'
+    MaxLength: '18'
+    Default: 0.0.0.0/0
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+Resources:
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType:
+        Ref: InstanceType
+      SecurityGroups:
+      - Ref: InstanceSecurityGroup
+      KeyName:
+        Ref: KeyName
+      ImageId: !Ref Ami
+      Tags:
+      - Key: Name
+        Value: "ARM Example"
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          
+          sudo yum install -y git
+          
+          # rebuild the Docker image on instance so it's built with ARM architecture
+          git clone https://github.com/tongueroo/sinatra
+          cd sinatra
+          docker build -t tongueroo/sinatra:arm .
+          
+          # Run the Docker container and curl it to test
+          set -x # turn on tracing to see commands near the end
+          docker run --rm -d -p 4567:4567 tongueroo/sinatra:arm
+          sleep 10 # wait for container to start
+          curl -s localhost:4567 ; echo
+          
+          uptime > /tmp/uptime.txt # to see how long process takes
+
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp:
+          Ref: SSHLocation
+      - IpProtocol: tcp
+        FromPort: '4567'
+        ToPort: '4567'
+        CidrIp:
+          Ref: SSHLocation
+Outputs:
+  InstanceId:
+    Description: InstanceId of the newly created EC2 instance
+    Value:
+      Ref: EC2Instance
+  AZ:
+    Description: Availability Zone of the newly created EC2 instance
+    Value:
+      Fn::GetAtt:
+      - EC2Instance
+      - AvailabilityZone
+  PublicDNS:
+    Description: Public DNSName of the newly created EC2 instance
+    Value:
+      Fn::GetAtt:
+      - EC2Instance
+      - PublicDnsName
+  PublicIP:
+    Description: Public IP address of the newly created EC2 instance
+    Value:
+      Fn::GetAtt:
+      - EC2Instance
+      - PublicIp
