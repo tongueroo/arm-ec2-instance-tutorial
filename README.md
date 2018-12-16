@@ -1,6 +1,6 @@
 # ARM EC2 Instance Tutorial
 
-This CloudFormation stack launches an ARM based EC2 instance for testing.
+This CloudFormation stack launches an ARM-based EC2 A1 Instance Type for testing.
 
 1. It builds a Docker image
 2. Runs the Docker container
@@ -8,7 +8,7 @@ This CloudFormation stack launches an ARM based EC2 instance for testing.
 
 The app in the Docker image is a small sinatra app for testing, source code for it is here: [tongueroo/sinatra](https://github.com/tongueroo/sinatra)
 
-* Blog Post: ...
+* Blog Post: [EC2 A1 Instance with AWS Homegrown ARM Processor: Easy Way to Save 40%](https://blog.boltops.com/2018/12/16/ec2-a1-instance-with-aws-homegrown-arm-processor-easy-way-to-save-40)
 
 ## Usage
 
