@@ -1,2 +1,2 @@
-KeyName=default-2018-03-18
+KeyName=default
 

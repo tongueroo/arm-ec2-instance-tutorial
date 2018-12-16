@@ -34,7 +34,7 @@ Example:
     stack_name: ec2-pee
     parameters:
     - parameter_key: KeyName
-      parameter_value: default-2018-03-18
+      parameter_value: default
     disable_rollback: false
     template_body: 'Hidden due to size... View at: output/templates/ec2.yml'
     Creating ec2-pee stack.
@@ -53,6 +53,6 @@ Example:
 
 If you prefer now to have to install lono and you can use the aws cli to launch the stack also:
 
-    aws cloudformation create-stack --stack-name=ec2-$(date +%s) --template-body file://raw/ec2.yml --parameters ParameterKey=KeyName,ParameterValue=default-2018-03-18
+    aws cloudformation create-stack --stack-name=ec2-$(date +%s) --template-body file://raw/ec2.yml --parameters ParameterKey=KeyName,ParameterValue=default
 
-Remember to substitute `default-2018-03-18` for your KeyName value. Also note, the `date +%s` command is used to add a random suffix.
+Remember to substitute `default` for your KeyName value. Also note, the `date +%s` command is used to add a random suffix.
