@@ -51,7 +51,7 @@ Example:
     Time took for stack deployment: 25s.
     $
 
-If you prefer now to have to install lono and you can use the aws cli to launch the stack also:
+If you prefer not to use lono, you can use the aws cli to launch the stack also:
 
     aws cloudformation create-stack --stack-name=ec2-$(date +%s) --template-body file://raw/ec2.yml --parameters ParameterKey=KeyName,ParameterValue=default
 
