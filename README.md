@@ -1,5 +1,7 @@
 # ARM EC2 Instance Tutorial
 
+[![BoltOps Badge](https://img.boltops.com/boltops/badges/boltops-badge.png)](https://www.boltops.com)
+
 This CloudFormation stack launches an ARM-based EC2 A1 Instance Type for testing.
 
 1. It builds a Docker image
